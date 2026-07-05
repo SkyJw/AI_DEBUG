@@ -1,0 +1,4 @@
+[0ms] UBOOT: power-on reset
+[45ms] UBOOT: DDR init done
+[120ms] UBOOT: loading kernel image
+[260ms] UBOOT: Starting kernel ...

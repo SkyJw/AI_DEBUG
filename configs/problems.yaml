@@ -1,0 +1,78 @@
+# Problem catalogue — the seed of the signature library.
+#
+# Each problem is a catalogued fault: what it is, likely causes, how to verify,
+# and which target log patterns (by id) are its signatures. The `targets` list is
+# the BACK-reference that mirrors each target's `problem` link in configs/logs/*.yaml
+# (bidirectional association, cross-checked by tests).
+#
+# BSP engineers grow this over time; the log-analyst sub-agent reads it to ground
+# hypotheses in curated knowledge instead of inventing them.
+
+problems:
+  - id: boot-early-failure
+    title: Bootloader-stage failure
+    summary: >
+      An error/fail/abort was printed during the UBOOT (bootloader) phase, before
+      the kernel was reached. The board likely never handed off to Linux.
+    likely_causes:
+      - DDR / memory init failure
+      - corrupt or missing kernel image in the boot partition
+      - power / clock not stable at bootloader stage
+    verify_steps:
+      - check whether "Starting kernel" appears after the error in UBOOT
+      - compare against a known-good boot's UBOOT log at the same stage
+    targets: [uboot-error]
+
+  - id: kernel-oops
+    title: Kernel oops / panic
+    summary: >
+      The kernel hit an oops/BUG/panic during init or a SoC .ko. Look at the call
+      trace that follows the header line to locate the faulting path.
+    likely_causes:
+      - null-pointer dereference / out-of-bounds in a driver
+      - a SoC .ko probe failing and taking the kernel down
+    verify_steps:
+      - read the lines right after the oops header (the call trace)
+      - identify the last .ko / subsystem mentioned before the fault
+    targets: [panic-oops, panic-call-trace]
+
+  - id: sgc-stall
+    title: SGC stage stall (stuck user-space startup)
+    summary: >
+      A user-space process (often at the SGC serial→parallel transition) printed
+      vBSP_init begin but never its end, and reported no progress — startup is
+      stuck at that stage.
+    likely_causes:
+      - a downstream dependency (service / device) not ready
+      - resource (lock / socket / device node) never became available
+    verify_steps:
+      - find the last vBSP_init begin without a matching end in CBBLOG
+      - check whether the same bundle shows a later boot that succeeded
+    targets: [cbblog-stage-stall]
+
+  - id: reset-storm
+    title: Reset storm → bios recovery
+    summary: >
+      The board reset more times than the threshold and dropped into the bios
+      recovery path (initrd → nebios) instead of the normal soft state. Usually a
+      symptom of a repeating earlier failure, not a root cause itself.
+    likely_causes:
+      - a repeating boot/kernel/user-space failure tripping the reset counter
+      - watchdog resets from a hang during normal boot
+    verify_steps:
+      - confirm nebios appears (bios 态) and nesoft/bdsoft does not
+      - look at earlier boots in the same bundle for the repeating failure
+    targets: [cbblog-bios-recovery]
+
+  - id: eth-link-flap
+    title: Ethernet link flap
+    summary: >
+      A network port lost carrier and (usually) recovered — a runtime issue that
+      surfaces after boot, best seen in CBBLOGDUMP runtime snapshots.
+    likely_causes:
+      - cabling / SFP / PHY autoneg instability
+      - remote peer flapping or duplex mismatch
+    verify_steps:
+      - correlate the panic "PHY link down" with the CBBLOG carrier-lost line
+      - check how long between down and up (outage duration)
+    targets: [panic-eth-link-down]

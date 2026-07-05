@@ -1,0 +1,229 @@
+/* aidbg TUI — minimal black theme (Claude Code / opencode inspired).
+   Chrome recedes into the black canvas; content and one accent do the talking. */
+
+Screen {
+    layout: horizontal;
+    background: $background;
+}
+
+Header {
+    background: $background;
+    color: $text-muted;
+    text-style: none;
+    height: 1;
+}
+
+Footer {
+    background: $background;
+    color: $text-muted;
+}
+
+Footer > .footer--key {
+    background: $background;
+    color: $accent;
+}
+
+/* --- main column ------------------------------------------------------- */
+
+#main {
+    width: 3fr;
+    height: 100%;
+    background: $background;
+}
+
+#sidebar {
+    width: 1fr;
+    min-width: 30;
+    height: 100%;
+    background: $background;
+    border-left: solid $border;
+}
+
+.sidebar-title {
+    padding: 1 1 0 1;
+    text-style: bold;
+    color: $text-muted;
+}
+
+ChatView {
+    height: 1fr;
+    padding: 0 2;
+    background: $background;
+    scrollbar-size-vertical: 1;
+}
+
+ActivityLog {
+    height: 1fr;
+    padding: 0 1;
+    background: $background;
+    color: $text-muted;
+    scrollbar-size-vertical: 1;
+}
+
+AgentList {
+    height: auto;
+    max-height: 10;
+    background: $background;
+    border: none;
+}
+
+AgentList > ListItem {
+    background: $background;
+    color: $text-muted;
+    padding: 0 1;
+}
+
+AgentList > ListItem.active-agent {
+    color: $accent;
+    text-style: bold;
+}
+
+/* --- input ------------------------------------------------------------- */
+
+InputBar {
+    dock: bottom;
+    margin: 1 2;
+    background: $surface;
+    color: $foreground;
+    border: round $border;
+    padding: 0 1;
+}
+
+InputBar:focus {
+    border: round $accent;
+}
+
+InputBar.-disabled {
+    color: $text-disabled;
+}
+
+/* --- messages ---------------------------------------------------------- */
+
+ChatMessage {
+    height: auto;
+    margin: 1 0 0 0;
+    padding: 0 0 0 1;
+    background: $background;
+}
+
+ChatMessage.role-user {
+    border-left: thick $accent;
+}
+
+ChatMessage.role-assistant {
+    border-left: thick $border;
+}
+
+.msg-badge {
+    text-style: bold;
+    color: $accent;
+    padding: 0 0 0 1;
+}
+
+ChatMessage.role-user .msg-badge {
+    color: $success;
+}
+
+ChatMessage Markdown {
+    background: $background;
+    margin: 0;
+    padding: 0 1;
+}
+
+/* --- thinking block (dimmed, collapsible) ------------------------------ */
+
+ThinkingMessage {
+    height: auto;
+    margin: 1 0 0 0;
+    background: $background;
+}
+
+ThinkingMessage Collapsible {
+    background: $background;
+    border: none;
+    padding: 0;
+}
+
+ThinkingMessage CollapsibleTitle {
+    color: $text-muted;
+    text-style: italic;
+    background: $background;
+}
+
+ThinkingMessage CollapsibleTitle:hover {
+    color: $secondary;
+}
+
+ThinkingMessage Collapsible Contents {
+    background: $background;
+    padding: 0 0 0 2;
+    border-left: solid $border;
+}
+
+ThinkingMessage Markdown {
+    background: $background;
+    color: $text-muted;
+    margin: 0;
+    padding: 0 1;
+}
+
+/* --- delegation card (orchestrator dispatch, shown inline) ------------- */
+
+DelegationCard {
+    height: auto;
+    margin: 1 0 0 0;
+    padding: 0 1;
+    background: $background;
+    border-left: thick $warning;
+}
+
+DelegationCard.done {
+    border-left: thick $success;
+}
+
+.deleg-title {
+    text-style: bold;
+    color: $warning;
+}
+
+DelegationCard.done .deleg-title {
+    color: $success;
+}
+
+.deleg-task {
+    color: $foreground;
+    padding: 0 0 0 2;
+}
+
+.deleg-status {
+    color: $text-muted;
+    text-style: italic;
+    padding: 0 0 0 2;
+}
+
+DelegationCard.running .deleg-status {
+    color: $warning;
+}
+
+DelegationCard.done .deleg-status {
+    color: $success;
+}
+
+DelegationCard .deleg-report {
+    background: $background;
+    border: none;
+    padding: 0 0 0 2;
+    margin: 0;
+}
+
+DelegationCard .deleg-report CollapsibleTitle {
+    color: $text-muted;
+    background: $background;
+}
+
+DelegationCard .deleg-report Markdown {
+    background: $background;
+    color: $foreground;
+    margin: 0;
+    padding: 0 1;
+}

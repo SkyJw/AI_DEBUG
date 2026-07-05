@@ -1,0 +1,3 @@
+[2026-07-04:10:20:00] [pid=240 tid=240] [P0] [INFO] runtime: heartbeat ok
+[2026-07-04:11:20:00] [pid=512 tid=512] [P6] [ERROR] eth0 link flap detected, carrier lost
+[2026-07-04:11:20:03] [pid=512 tid=512] [P6] [WARN] eth0 recovered after 3s outage

@@ -1,0 +1,11 @@
+[2026-07-04:10:20:22] [pid=120 tid=120] [P6] [INFO] vBSP_init begin process=sys_clk_init
+[2026-07-04:10:20:23] [pid=120 tid=120] [P6] [INFO] vBSP_init end process=sys_clk_init
+[2026-07-04:10:20:26] [pid=135 tid=135] [P6] [INFO] vBSP_init begin process=cpldload
+[2026-07-04:10:20:27] [pid=135 tid=135] [P6] [INFO] vBSP_init end process=cpldload
+[2026-07-04:10:20:30] [pid=150 tid=150] [P3] [INFO] vBSP_init begin process=boot
+[2026-07-04:10:20:30] [pid=150 tid=150] [P3] [INFO] boot: system time set to real time
+[2026-07-04:10:20:31] [pid=150 tid=150] [P3] [INFO] vBSP_init end process=boot
+[2026-07-04:10:20:34] [pid=210 tid=210] [P6] [INFO] vBSP_init begin process=SGC
+[2026-07-04:10:20:35] [pid=210 tid=210] [P6] [INFO] vBSP_init end process=SGC
+[2026-07-04:10:20:38] [pid=240 tid=240] [P0] [INFO] vBSP_init begin process=nesoft
+[2026-07-04:10:20:39] [pid=240 tid=240] [P0] [INFO] vBSP_init end process=nesoft

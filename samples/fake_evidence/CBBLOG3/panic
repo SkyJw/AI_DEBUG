@@ -1,0 +1,5 @@
+[19700101000000] Linux version 5.10 booting
+[19700101000001] SoC clock tree initialised
+[19700101000003] eth0: MAC driver probe ok
+[19900101000001] rtc: system time bumped to 1990 default
+[20260704100020] userspace: init handoff

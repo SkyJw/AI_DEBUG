@@ -1,0 +1,26 @@
+# CBBLOG (BSP_DRV user-space) log — parsed by the `cbblog` LogFile class.
+type: cbblog
+filenames: [CBBLOG]
+
+target:
+  # Ship OFF → every line kept, no annotation (lossless). Flip on for targeted mode.
+  enabled: false
+  entries:
+    - id: cbblog-vbsp-init
+      meaning: vBSP_init begin/end — process startup landmark (which stage was reached)
+      match: substring
+      pattern: "vBSP_init"
+    - id: cbblog-stage-stall
+      meaning: a process stalled waiting on a resource (vBSP_init began but made no progress)
+      match: substring
+      pattern: "no progress"
+      problem: sgc-stall
+    - id: cbblog-bios-recovery
+      meaning: board entered bios recovery state (reset count over threshold)
+      match: substring
+      pattern: "nebios"
+      problem: reset-storm
+    - id: cbblog-error
+      meaning: user-space error / warn / failure line
+      match: regex
+      pattern: "(?i)(error|warn|fail)"

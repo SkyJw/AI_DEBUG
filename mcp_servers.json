@@ -1,0 +1,10 @@
+{
+  "servers": [
+    {
+      "name": "fs",
+      "kind": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."]
+    }
+  ]
+}

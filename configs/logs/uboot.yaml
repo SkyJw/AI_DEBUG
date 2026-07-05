@@ -1,0 +1,19 @@
+# UBOOT (bootloader) log — parsed by the `uboot` LogFile class.
+# `filenames` is where the UBOOT / hiboot_bootinfo aliasing lives (not in code).
+type: uboot
+filenames: [UBOOT, hiboot_bootinfo]
+
+# `target` = the switchable catalogue of diagnostically-meaningful log patterns.
+target:
+  # Ship OFF → every line kept, no annotation (lossless). Flip on for targeted mode.
+  enabled: false
+  entries:
+    - id: uboot-kernel-handoff
+      meaning: bootloader finished and handed off to the kernel
+      match: substring
+      pattern: "Starting kernel"
+    - id: uboot-error
+      meaning: bootloader-stage error / failure / abort
+      match: regex
+      pattern: "(?i)(error|fail|abort)"
+      problem: boot-early-failure

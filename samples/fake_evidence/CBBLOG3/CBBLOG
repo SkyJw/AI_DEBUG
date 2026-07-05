@@ -1,0 +1,7 @@
+[2026-07-04:10:00:22] [pid=90 tid=90] [P4] [INFO] vBSP_init begin process=initrd
+[2026-07-04:10:00:23] [pid=90 tid=90] [P4] [INFO] vBSP_init end process=initrd
+[2026-07-04:10:00:26] [pid=150 tid=150] [P3] [INFO] vBSP_init begin process=boot
+[2026-07-04:10:00:26] [pid=150 tid=150] [P3] [INFO] boot: system time set to real time
+[2026-07-04:10:00:27] [pid=150 tid=150] [P3] [INFO] vBSP_init end process=boot
+[2026-07-04:10:00:30] [pid=230 tid=230] [P1] [INFO] vBSP_init begin process=bdsoft
+[2026-07-04:10:00:31] [pid=230 tid=230] [P1] [INFO] vBSP_init end process=bdsoft

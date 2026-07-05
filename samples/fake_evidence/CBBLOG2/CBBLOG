@@ -1,0 +1,4 @@
+[2026-07-04:10:10:22] [pid=90 tid=90] [P4] [INFO] vBSP_init begin process=initrd
+[2026-07-04:10:10:23] [pid=90 tid=90] [P4] [INFO] vBSP_init end process=initrd
+[2026-07-04:10:10:26] [pid=160 tid=160] [P5] [INFO] vBSP_init begin process=nebios
+[2026-07-04:10:10:27] [pid=160 tid=160] [P5] [INFO] vBSP_init end process=nebios
