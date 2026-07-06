@@ -4,6 +4,7 @@ widgets."""
 from __future__ import annotations
 
 from aidbg.ui.widgets.chat_message import ChatMessage, DelegationCard, ThinkingMessage
+from aidbg.ui.widgets.welcome import WelcomeCard
 
 from textual.containers import VerticalScroll
 
@@ -21,8 +22,30 @@ class ChatView(VerticalScroll):
         super().__init__()
         self._by_id: dict[str, ChatMessage | ThinkingMessage] = {}
         self._deleg_stacks: dict[tuple[str, str], list[DelegationCard]] = {}
+        self._welcome: WelcomeCard | None = None
+
+    def on_mount(self) -> None:
+        # Greet with the intro/help card in the otherwise-empty transcript.
+        self._welcome = WelcomeCard(id="welcome")
+        self.mount(self._welcome)
+
+    async def _dismiss_welcome(self) -> None:
+        if self._welcome is not None:
+            await self._welcome.remove()
+            self._welcome = None
+
+    def toggle_welcome(self) -> None:
+        """Show the welcome/help card, or hide it if already shown (F1)."""
+        if self._welcome is not None:
+            self._welcome.remove()
+            self._welcome = None
+            return
+        self._welcome = WelcomeCard(id="welcome")
+        self.mount(self._welcome)
+        self.scroll_end(animate=False)
 
     async def add_user_message(self, text: str) -> None:
+        await self._dismiss_welcome()
         msg = ChatMessage(agent="you", role="user", initial=text)
         await self.mount(msg)
         self.scroll_end(animate=False)

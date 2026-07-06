@@ -20,6 +20,7 @@ from aidbg.ui.widgets.activity import ActivityLog
 from aidbg.ui.widgets.agent_list import AgentList
 from aidbg.ui.widgets.chat_view import ChatView
 from aidbg.ui.widgets.input_bar import InputBar
+from aidbg.ui.widgets.subagent_panel import SubAgentPanel
 from aidbg.ui.workers import ChatController
 
 
@@ -27,9 +28,10 @@ class AidbgApp(App[None]):
     """The aidbg TUI."""
 
     CSS_PATH = "app.tcss"
-    TITLE = "aidbg"
+    TITLE = "aidbg · 传送底软多智能体协同定位助手"
     BINDINGS = [
         ("ctrl+s", "save_history", "Save"),
+        ("f1", "help", "帮助"),
         ("ctrl+c", "quit", "Quit"),
     ]
 
@@ -37,11 +39,18 @@ class AidbgApp(App[None]):
         super().__init__()
         self.session = session
         self.agent_names = agent_names
+        # Sub-agents are every registered agent that isn't the orchestrator; their
+        # events route to the sub-agent window instead of the main transcript.
+        self._subagent_names = {n for n in agent_names if n != "orchestrator"}
+        # message_id -> producing agent, so token/thinking/finish deltas (which
+        # carry only a message_id) can be routed to the right window.
+        self._msg_owner: dict[str, str] = {}
         self.controller = ChatController(self, session)
         self._chat: ChatView
         self._activity: ActivityLog
         self._agents: AgentList
         self._input: InputBar
+        self._subpanel: SubAgentPanel
 
     # --- layout ------------------------------------------------------------
 
@@ -51,9 +60,11 @@ class AidbgApp(App[None]):
         self._activity = ActivityLog()
         self._agents = AgentList(self.agent_names)
         self._input = InputBar()
+        self._subpanel = SubAgentPanel()
         with Vertical(id="main"):
             yield self._chat
             yield self._input
+        yield self._subpanel
         with Vertical(id="sidebar"):
             yield Label("Agents", classes="sidebar-title")
             yield self._agents
@@ -83,6 +94,9 @@ class AidbgApp(App[None]):
         self.run_worker(self._begin_turn(prompt), exclusive=False)
 
     async def _begin_turn(self, prompt: str) -> None:
+        # Fresh turn: clear the sub-agent window and message routing map.
+        self._msg_owner.clear()
+        await self._subpanel.reset()
         await self._chat.add_user_message(prompt)
         self.controller.run_turn(prompt)
 
@@ -96,33 +110,52 @@ class AidbgApp(App[None]):
     async def on_ui_event_arrived(self, message: UiEventArrived) -> None:
         e = message.event
         if isinstance(e, ev.MessageStarted):
-            await self._chat.start_message(e.agent, e.message_id, e.kind)
+            self._msg_owner[e.message_id] = e.agent
+            if e.agent in self._subagent_names:
+                await self._subpanel.start_message(e.agent, e.message_id, e.kind)
+            else:
+                await self._chat.start_message(e.agent, e.message_id, e.kind)
             self._agents.highlight_agent(e.agent)
         elif isinstance(e, ev.TokenDelta):
-            await self._chat.append_token(e.message_id, e.text)
+            if self._msg_owner.get(e.message_id) in self._subagent_names:
+                await self._subpanel.append_token(e.message_id, e.text)
+            else:
+                await self._chat.append_token(e.message_id, e.text)
         elif isinstance(e, ev.ThinkingDelta):
-            # Thinking has its own message id / block; stream it there.
-            await self._chat.append_token(e.message_id, e.text)
+            # Thinking has its own message id / block; stream it to its window.
+            if self._msg_owner.get(e.message_id) in self._subagent_names:
+                await self._subpanel.append_token(e.message_id, e.text)
+            else:
+                await self._chat.append_token(e.message_id, e.text)
         elif isinstance(e, ev.MessageFinished):
-            await self._chat.finish_message(e.message_id)
+            if self._msg_owner.get(e.message_id) in self._subagent_names:
+                await self._subpanel.finish_message(e.message_id)
+            else:
+                await self._chat.finish_message(e.message_id)
         elif isinstance(e, ev.ToolCallStarted):
             self._chat.note_tool_call(e.agent)
+            if e.agent in self._subagent_names:
+                await self._subpanel.note_tool(e.agent, e.tool_name, e.args_preview)
             self._activity.tool_started(e.agent, e.tool_name, e.args_preview)
         elif isinstance(e, ev.ToolCallFinished):
             self._activity.tool_finished(e.agent, e.tool_name, e.result_preview)
         elif isinstance(e, ev.DelegationStarted):
+            # Slim breadcrumb in main; the sub-agent's work lives in its window.
             await self._chat.start_delegation(e.parent, e.child, e.task)
+            await self._subpanel.open_agent(e.child, e.task)
             self._activity.delegation_started(e.parent, e.child, e.task)
             self._agents.highlight_agent(e.child)
         elif isinstance(e, ev.DelegationFinished):
-            await self._chat.finish_delegation(
-                e.parent, e.child, e.output_preview, e.full_output
-            )
+            # Do not echo the sub-agent's report into the main window.
+            await self._chat.finish_delegation(e.parent, e.child, "", "")
+            self._subpanel.close_agent(e.child)
             self._activity.delegation_finished(e.parent, e.child, e.output_preview)
             self._agents.highlight_agent(e.parent)
         elif isinstance(e, ev.RunFinished):
             self._update_usage(e.usage_summary)
         elif isinstance(e, ev.RunError):
+            if e.agent in self._subagent_names:
+                await self._subpanel.error(e.agent, e.message)
             self._activity.run_error(e.agent, e.message)
 
     def _update_usage(self, summary: str) -> None:
@@ -133,3 +166,7 @@ class AidbgApp(App[None]):
     def action_save_history(self) -> None:
         path = self.session.save()
         self._activity.write(f"[green]saved history →[/] {path}")
+
+    def action_help(self) -> None:
+        """Toggle the welcome/help card in the transcript."""
+        self._chat.toggle_welcome()

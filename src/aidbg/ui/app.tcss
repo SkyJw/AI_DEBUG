@@ -39,6 +39,55 @@ Footer > .footer--key {
     border-left: solid $border;
 }
 
+/* --- sub-agent window (tmux-style tabs, revealed on delegation) -------- */
+
+#subagents {
+    width: 3fr;
+    min-width: 32;
+    height: 100%;
+    background: $background;
+    border-left: solid $border;
+}
+
+#subagents TabbedContent {
+    height: 1fr;
+    background: $background;
+}
+
+#subagents Tabs {
+    background: $background;
+}
+
+#subagents TabPane {
+    padding: 0 1;
+    background: $background;
+}
+
+AgentPane {
+    height: 1fr;
+    background: $background;
+    scrollbar-size-vertical: 1;
+}
+
+AgentPane.done {
+    /* subtle cue the sub-agent has finished */
+}
+
+.pane-status {
+    color: $warning;
+    text-style: bold;
+    padding: 0 1;
+}
+
+AgentPane.done .pane-status {
+    color: $success;
+}
+
+.pane-note {
+    color: $text-muted;
+    padding: 0 1;
+}
+
 .sidebar-title {
     padding: 1 1 0 1;
     text-style: bold;
@@ -95,6 +144,22 @@ InputBar:focus {
 
 InputBar.-disabled {
     color: $text-disabled;
+}
+
+/* --- welcome / help card ---------------------------------------------- */
+
+WelcomeCard {
+    height: auto;
+    margin: 1 0 0 0;
+    padding: 0 1;
+    background: $background;
+    border: round $accent;
+}
+
+WelcomeCard Markdown {
+    background: $background;
+    margin: 0;
+    padding: 0 1;
 }
 
 /* --- messages ---------------------------------------------------------- */
