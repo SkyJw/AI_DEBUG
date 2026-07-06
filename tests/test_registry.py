@@ -74,27 +74,30 @@ def test_builtin_agents_registered():
     names = AGENTS.names()
     assert {
         "orchestrator",
-        "coder",
-        "researcher",
-        "code-reviewer",
         "log-analyst",
+        "case-rag",
         "code-research",
-    } <= set(names)
+        "case-recorder",
+    } == set(names)
     assert AGENTS.get("orchestrator").delegates_to == (
-        "coder",
-        "researcher",
-        "code-reviewer",
         "log-analyst",
+        "case-rag",
         "code-research",
+        "case-recorder",
     )
 
 
-def test_code_research_scaffold_spec():
-    """Code-research is wired as a scaffold: reads the board, no MCP backends yet."""
+def test_scaffold_specs():
+    """The three scaffold agents read the board and have no MCP backends yet."""
     import aidbg.agents  # noqa: F401
     from aidbg.core.registry import AGENTS
 
-    spec = AGENTS.get("code-research")
-    assert spec.profile == "code_research"
-    assert spec.tool_names == ("list_findings",)  # reads the board, files nothing
-    assert spec.mcp_names == ()  # MCP services not deployed yet
+    for name, profile in (
+        ("code-research", "code_research"),
+        ("case-rag", "case_rag"),
+        ("case-recorder", "case_recorder"),
+    ):
+        spec = AGENTS.get(name)
+        assert spec.profile == profile
+        assert spec.tool_names == ("list_findings",)  # reads the board, files nothing
+        assert spec.mcp_names == ()  # backends not deployed yet

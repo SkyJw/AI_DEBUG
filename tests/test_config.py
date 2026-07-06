@@ -14,13 +14,13 @@ def test_profile_grouping(monkeypatch):
     monkeypatch.setenv("AIDBG_DEFAULT__BASE_URL", "https://api.deepseek.com/v1")
     monkeypatch.setenv("AIDBG_OLLAMA__MODEL", "qwen2.5")
     monkeypatch.setenv("AIDBG_OLLAMA__BASE_URL", "http://localhost:11434/v1")
-    monkeypatch.setenv("AIDBG_PROFILE_RESEARCHER", "ollama")
+    monkeypatch.setenv("AIDBG_PROFILE_ANALYST", "ollama")
 
     s = load_settings()
     assert set(s.profiles) == {"default", "ollama"}
     assert s.profiles["default"].model == "deepseek-chat"
-    assert s.profile_for("researcher").model == "qwen2.5"
-    assert s.profile_for("coder").model == "deepseek-chat"
+    assert s.profile_for("analyst").model == "qwen2.5"
+    assert s.profile_for("code_research").model == "deepseek-chat"
 
 
 def test_missing_profile_falls_back_to_default():

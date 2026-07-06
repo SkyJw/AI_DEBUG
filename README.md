@@ -1,12 +1,17 @@
 # aidbg
 
-A Textual TUI multi-agent CLI built on **pydantic-ai**. An orchestrator agent
-delegates to specialist sub-agents (coder / researcher / code-reviewer) via tool
-calls, streaming tokens, thinking, tool activity, and delegations to a chat UI
-with a live activity sidebar.
+A Textual TUI multi-agent CLI built on **pydantic-ai**, specialized as a **传送底软
+(embedded-Linux BSP) fault-localization assistant**. An orchestrator agent
+coordinates a domain team of specialist sub-agents — **log-analyst → case-rag →
+code-research → case-recorder** — via tool calls, streaming tokens, thinking, tool
+activity, and delegations to a chat UI with a live activity sidebar.
 
 Capabilities wired end-to-end: **function calling**, **streaming**, **MCP client**,
-and **multi-agent delegation** with aggregated token usage.
+and **multi-agent delegation** with aggregated token usage. `log-analyst` is fully
+functional (typed queries over parsed board logs); `case-rag`, `code-research`, and
+`case-recorder` are scaffolds today — they call the LLM and return
+role-appropriate status, with their real backends (RAG / code-search MCP / case
+store) wired in later.
 
 ## Quick start
 
@@ -28,8 +33,10 @@ AIDBG_DEFAULT__MODEL=qwen2.5:14b
 ### In the TUI
 
 - Type a message and press **Enter**. The orchestrator replies, streaming Markdown.
-- Ask it to *"have the coder write fizzbuzz"* → the sidebar shows the delegation,
-  the coder's tokens stream into a second bubble badged `coder`, then it returns.
+- Ask it to *"triage samples/fake_evidence — why does the board keep rebooting?"* →
+  the sidebar shows the delegation, the log-analyst's tokens stream into a second
+  bubble badged `log-analyst`, it files findings, then the orchestrator runs the
+  rest of the team (case-rag → code-research → case-recorder) and synthesizes.
 - Ask it to *"read pyproject.toml"* → the `read_file` tool fires; the sidebar logs
   the call and result.
 - **Ctrl+S** saves the transcript; start with `--resume` to restore it.
@@ -80,18 +87,18 @@ through the *same* `pump_agent_run`, tagged with the child's name, forwarding
 sequenceDiagram
     actor User
     participant O as Orchestrator (LLM)
-    participant D as delegate_to_coder (tool)
-    participant C as Coder sub-agent
+    participant D as delegate_to_log_analyst (tool)
+    participant C as log-analyst sub-agent
     participant Bus as EventBus → UI
 
-    User->>O: "have the coder write fizzbuzz"
-    Note over O: model decides this is a coding task
-    O->>D: tool call: delegate_to_coder(task="write fizzbuzz")
-    D->>Bus: DelegationStarted(parent=orchestrator, child=coder)
-    D->>C: pump_agent_run(task, usage=ctx.usage, agent_name="coder")
-    C-->>Bus: MessageStarted / TokenDelta* / ToolCall* (tagged "coder")
-    C-->>D: result.output (the code)
-    D->>Bus: DelegationFinished(child=coder)
+    User->>O: "triage samples/fake_evidence"
+    Note over O: model decides this is a log-triage task
+    O->>D: tool call: delegate_to_log_analyst(task="triage ...")
+    D->>Bus: DelegationStarted(parent=orchestrator, child=log-analyst)
+    D->>C: pump_agent_run(task, usage=ctx.usage, agent_name="log-analyst")
+    C-->>Bus: MessageStarted / TokenDelta* / ToolCall* (tagged "log-analyst")
+    C-->>D: result.output (the triage report)
+    D->>Bus: DelegationFinished(child=log-analyst)
     D-->>O: return output (tool result)
     Note over O: synthesizes child result into final answer
     O-->>Bus: MessageStarted / TokenDelta* (tagged "orchestrator")
@@ -111,10 +118,11 @@ Everything extends via explicit, greppable drop-ins (no plugin magic):
 - **Add a sub-agent** — write `src/aidbg/agents/<name>.py` registering an
   `AgentSpec`, import it in `agents/__init__.py` (children *before* the
   orchestrator), and add its name to the orchestrator's `delegates_to`. The
-  `code-reviewer` agent is a worked example of exactly this: `agents/code_reviewer.py`
-  + `prompts/code_reviewer.md` + one entry in `delegates_to` gave the orchestrator
-  a `delegate_to_code_reviewer` tool with no other wiring. Optionally add a
-  `profile_<name>` field in `config/settings.py` to route it to a different backend.
+  `code-research` agent is a worked example of a *scaffold*: `agents/code_research.py`
+  + `prompts/code_research.md` + one entry in `delegates_to` gave the orchestrator
+  a `delegate_to_code_research` tool with no other wiring. Add a `profile_<name>`
+  field in `config/settings.py` (and the matching `PROFILE_<NAME>` in `_RESERVED`)
+  to route it to a backend; leave `mcp_names` empty until its real backend deploys.
 - **Add an MCP server** — add one entry to `mcp_servers.json`, then list its name
   in an agent's `mcp_names`.
 
@@ -125,6 +133,6 @@ uv run pytest                 # no backend needed (TestModel/FunctionModel)
 uv run ruff check src tests
 uv run mypy src
 
-# layering invariant: core/session/config must not import textual
-! grep -RIE 'import textual|from textual' src/aidbg/core src/aidbg/session src/aidbg/config
+# layering invariant: core/session/config/logs must not import textual
+! grep -RIE 'import textual|from textual' src/aidbg/core src/aidbg/session src/aidbg/config src/aidbg/logs
 ```

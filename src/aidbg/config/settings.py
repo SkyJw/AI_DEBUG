@@ -2,7 +2,7 @@
 
 Backend profiles are nested: ``AIDBG_DEFAULT__BASE_URL`` populates
 ``settings.profiles["default"].base_url``. Each agent references a profile by
-name (``AIDBG_PROFILE_CODER=ollama``). Adding a backend is 3 env lines; no code
+name (``AIDBG_PROFILE_ANALYST=ollama``). Adding a backend is 3 env lines; no code
 change beyond an ``.env`` entry.
 
 pydantic-settings does not natively collapse ``AIDBG_<NAME>__<FIELD>`` env vars
@@ -28,11 +28,10 @@ _NESTED_DELIM = "__"
 # Env keys (without prefix) that are real top-level fields, never profile groups.
 _RESERVED = {
     "PROFILE_ORCHESTRATOR",
-    "PROFILE_CODER",
-    "PROFILE_RESEARCHER",
-    "PROFILE_REVIEWER",
     "PROFILE_ANALYST",
     "PROFILE_CODE_RESEARCH",
+    "PROFILE_CASE_RAG",
+    "PROFILE_CASE_RECORDER",
     "THEME",
     "HISTORY_PATH",
     "MCP_CONFIG",
@@ -88,11 +87,10 @@ class Settings(BaseSettings):
 
     # Which profile each agent uses.
     profile_orchestrator: str = "default"
-    profile_coder: str = "default"
-    profile_researcher: str = "default"
-    profile_reviewer: str = "default"
     profile_analyst: str = "default"
     profile_code_research: str = "default"
+    profile_case_rag: str = "default"
+    profile_case_recorder: str = "default"
 
     # UI + persistence.
     theme: str = "aidbg-black"

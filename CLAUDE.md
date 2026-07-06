@@ -4,11 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-`aidbg` — a Textual TUI multi-agent CLI over **pydantic-ai** (installed: 2.5.x).
-An orchestrator agent delegates to sub-agents (coder / researcher) via tool calls,
-streaming tokens/tool-activity/delegations to a chat UI. Backends are
-OpenAI-compatible (DeepSeek / Ollama / vLLM / OpenAI) via `.env`. The framework is
-built and verified (23 tests, ruff + mypy clean, headless UI smoke test).
+`aidbg` — a Textual TUI multi-agent CLI over **pydantic-ai** (installed: 2.5.x),
+specialized as a **传送底软 (embedded-Linux BSP) fault-localization assistant**. An
+orchestrator agent delegates to a domain team of sub-agents (log-analyst →
+case-rag → code-research → case-recorder) via tool calls, streaming
+tokens/tool-activity/delegations to a chat UI. Backends are OpenAI-compatible
+(DeepSeek / Ollama / vLLM / OpenAI) via `.env`.
 
 - **`PLAN.md`** — the original design doc (architecture, extension points,
   verification plan). Still the best "why" reference.

@@ -60,7 +60,7 @@ class AgentSpec:
 
     name: str
     description: str
-    profile: str  # e.g. "orchestrator" | "coder" | "researcher"
+    profile: str  # e.g. "orchestrator" | "analyst" | "code_research"
     instructions_path: str
     tool_names: tuple[str, ...] = ()
     mcp_names: tuple[str, ...] = ()

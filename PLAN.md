@@ -1,5 +1,14 @@
 # Textual TUI + pydantic-ai Multi-Agent Framework Plan
 
+> **Historical doc.** This captures the original from-scratch framework build,
+> when the bootstrap sub-agents were generic (coder / researcher / code-reviewer).
+> The project has since pivoted to a **传送底软 (embedded-Linux BSP)
+> fault-localization assistant**: the generic agents were retired and replaced by
+> the domain team **log-analyst → case-rag → code-research → case-recorder** (see
+> `README.md` and `CLAUDE.md` for the current architecture). The framework design,
+> streaming pump, registries, and extension model below are all still accurate —
+> only the specific agent lineup changed.
+
 ## Context
 
 Empty repo at `\\wsl.localhost\Ubuntu-22.04\root\workspace\ai_debug` (only `.git`). Build a CLI TUI agent framework from scratch:

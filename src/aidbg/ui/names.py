@@ -9,12 +9,11 @@ display — you just get its machine name until you add a label here.
 from __future__ import annotations
 
 _DISPLAY = {
-    "orchestrator": "主控智能体",
-    "coder": "编码智能体",
-    "researcher": "调研智能体",
-    "code-reviewer": "代码评审智能体",
+    "orchestrator": "主智能体",
     "log-analyst": "日志分析智能体",
+    "case-rag": "案例检索智能体",
     "code-research": "代码研究智能体",
+    "case-recorder": "案例记录智能体",
     "you": "你",
 }
 
