@@ -24,6 +24,12 @@ AGENTS.register(
         ),
         profile="analyst",
         instructions_path="prompts/log_analyst.md",
-        tool_names=("list_evidence", "targeted_view", "read_log", "describe_problem"),
+        tool_names=(
+            "list_evidence",
+            "targeted_view",
+            "read_log",
+            "describe_problem",
+            "record_finding",
+        ),
     )
 )

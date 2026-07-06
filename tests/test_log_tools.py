@@ -141,3 +141,34 @@ async def test_delegation_to_log_analyst(tmp_path: Path):
         isinstance(e, ev.MessageStarted) and e.agent == "log-analyst" for e in events
     ), "expected a log-analyst MessageStarted event"
     assert result.output is not None
+
+
+async def test_delegation_to_code_research_shares_board(tmp_path: Path):
+    """Code-research is reachable as a delegate and reads the same findings board."""
+    settings = load_settings()
+    bus = EventBus()
+    q = bus.subscribe()
+    deps = AppDeps(bus=bus, workspace=tmp_path, settings=settings)
+    # Pre-seed the board as the log-analyst would have.
+    deps.findings.add(agent="log-analyst", summary="SGC stall", coordinate="boot1/cbblog:212")
+
+    agent = build_orchestrator(
+        settings=settings,
+        mcp_config=McpConfig(),
+        workspace=tmp_path,
+        model_override=TestModel(call_tools=[]),
+    )
+    # The child (code-research) reads the board via list_findings.
+    with agent.override(model=TestModel(call_tools=["delegate_to_code_research"])):
+        result = await pump_agent_run(
+            agent, "research the fault", deps=deps, bus=bus, agent_name="orchestrator"
+        )
+
+    events = []
+    while not q.empty():
+        events.append(q.get_nowait())
+    deleg = next(e for e in events if isinstance(e, ev.DelegationStarted))
+    assert deleg.parent == "orchestrator" and deleg.child == "code-research"
+    # The board instance is shared into the child run (data channel), not copied.
+    assert len(deps.findings) == 1
+    assert result.output is not None

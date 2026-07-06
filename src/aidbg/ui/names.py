@@ -14,6 +14,7 @@ _DISPLAY = {
     "researcher": "调研智能体",
     "code-reviewer": "代码评审智能体",
     "log-analyst": "日志分析智能体",
+    "code-research": "代码研究智能体",
     "you": "你",
 }
 

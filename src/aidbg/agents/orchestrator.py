@@ -14,6 +14,6 @@ AGENTS.register(
         profile="orchestrator",
         instructions_path="prompts/orchestrator.md",
         tool_names=("read_file",),
-        delegates_to=("coder", "researcher", "code-reviewer", "log-analyst"),
+        delegates_to=("coder", "researcher", "code-reviewer", "log-analyst", "code-research"),
     )
 )

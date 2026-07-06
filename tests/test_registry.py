@@ -68,13 +68,33 @@ def test_agent_duplicate_rejected():
 
 
 def test_builtin_agents_registered():
+    import aidbg.agents  # noqa: F401  (import side effect: registration)
     from aidbg.core.registry import AGENTS
 
     names = AGENTS.names()
-    assert {"orchestrator", "coder", "researcher", "code-reviewer", "log-analyst"} <= set(names)
+    assert {
+        "orchestrator",
+        "coder",
+        "researcher",
+        "code-reviewer",
+        "log-analyst",
+        "code-research",
+    } <= set(names)
     assert AGENTS.get("orchestrator").delegates_to == (
         "coder",
         "researcher",
         "code-reviewer",
         "log-analyst",
+        "code-research",
     )
+
+
+def test_code_research_scaffold_spec():
+    """Code-research is wired as a scaffold: reads the board, no MCP backends yet."""
+    import aidbg.agents  # noqa: F401
+    from aidbg.core.registry import AGENTS
+
+    spec = AGENTS.get("code-research")
+    assert spec.profile == "code_research"
+    assert spec.tool_names == ("list_findings",)  # reads the board, files nothing
+    assert spec.mcp_names == ()  # MCP services not deployed yet

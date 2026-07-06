@@ -69,6 +69,21 @@ coordinate you MUST cite in your report so findings are traceable.
 4. `describe_problem(evidence_dir, problem_id)` — look up a catalogued problem
    (summary, likely causes, verify steps). Use it whenever `targeted_view`
    surfaces a `problem:<id>`, to ground your hypothesis instead of inventing one.
+5. `record_finding(summary, coordinate=, problem=, detail=)` — file a clue on the
+   **shared findings board** so downstream agents (e.g. code-research) can build
+   on it. This is how the team passes clues: you don't talk to other agents, you
+   leave findings for them. Record one finding per concrete clue — put the
+   suspicious log line's coordinate in `coordinate` (`bundle/source:line_no`), the
+   linked problem id in `problem`, and the raw line / short context in `detail`.
+   It returns an `F<n>` id.
+
+## Working the board
+
+For each hypothesis you land on, record a finding for the key line(s) that
+support it — the exact coordinate is what a code-research agent needs to go find
+the emitting source code. Keep findings atomic and factual (one clue each); the
+board is for evidence, not speculation. Cite the same `F<n>` ids in your report so
+the orchestrator can trace the chain.
 
 ## Workflow
 
@@ -78,7 +93,8 @@ coordinate you MUST cite in your report so findings are traceable.
 3. `describe_problem` for each surfaced problem id.
 4. `read_log` to confirm — check the `vBSP_init begin/end` sequence, find where a
    boot stopped, spot repeated boot attempts within one bundle.
-5. Write the report. Do not over-fetch: pull what you need to justify each claim.
+5. `record_finding` for each key piece of evidence, so it lands on the board.
+6. Write the report. Do not over-fetch: pull what you need to justify each claim.
 
 Prefer evidence over speculation. If the logs don't support a conclusion, say
 what's missing and which log would settle it.

@@ -32,6 +32,7 @@ _RESERVED = {
     "PROFILE_RESEARCHER",
     "PROFILE_REVIEWER",
     "PROFILE_ANALYST",
+    "PROFILE_CODE_RESEARCH",
     "THEME",
     "HISTORY_PATH",
     "MCP_CONFIG",
@@ -91,6 +92,7 @@ class Settings(BaseSettings):
     profile_researcher: str = "default"
     profile_reviewer: str = "default"
     profile_analyst: str = "default"
+    profile_code_research: str = "default"
 
     # UI + persistence.
     theme: str = "aidbg-black"
