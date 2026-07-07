@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">aidbg 项目架构 PPT 图</title>
+  <desc id="desc">展示用户、Textual TUI、ChatSession、EventBus、pydantic-ai Agent Factory、多智能体团队、工具层、日志领域模型、配置与外部后端之间的数据流。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#07111f"/><stop offset="55%" stop-color="#0d1b2f"/><stop offset="100%" stop-color="#111827"/></linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#13233b"/><stop offset="100%" stop-color="#0f172a"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000" flood-opacity="0.35"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7dd3fc"/></marker>
+    <style>
+      .title{font:700 44px Inter,Arial,"Microsoft YaHei",sans-serif;fill:#f8fafc}.subtitle{font:500 22px Inter,Arial,"Microsoft YaHei",sans-serif;fill:#a5b4fc}.layer{font:700 22px Inter,Arial,"Microsoft YaHei",sans-serif;fill:#e0f2fe}.text{font:500 19px Inter,Arial,"Microsoft YaHei",sans-serif;fill:#dbeafe}.small{font:500 15px Inter,Arial,"Microsoft YaHei",sans-serif;fill:#cbd5e1}.tiny{font:500 13px Inter,Arial,"Microsoft YaHei",sans-serif;fill:#94a3b8}.box{fill:url(#card);stroke:#334155;stroke-width:2;rx:20;filter:url(#shadow)}.accent{stroke:#22d3ee;stroke-width:3}.agent{fill:#172554;stroke:#60a5fa;stroke-width:2;rx:18}.tool{fill:#064e3b;stroke:#34d399;stroke-width:2;rx:16}.config{fill:#3b2f12;stroke:#fbbf24;stroke-width:2;rx:16}.data{fill:#312e81;stroke:#a78bfa;stroke-width:2;rx:16}.flow{stroke:#7dd3fc;stroke-width:3;fill:none;marker-end:url(#arrow)}.flow2{stroke:#34d399;stroke-width:3;fill:none;marker-end:url(#arrow);stroke-dasharray:8 8}.label{font:700 14px Inter,Arial,"Microsoft YaHei",sans-serif;fill:#67e8f9}
+    </style>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <text x="70" y="72" class="title">aidbg：传送底软多智能体故障定位助手</text>
+  <text x="72" y="112" class="subtitle">Textual TUI × pydantic-ai × MCP × 结构化板端日志解析</text>
+
+  <rect x="60" y="155" width="300" height="220" class="box"/>
+  <text x="88" y="196" class="layer">交互层 UI</text>
+  <text x="88" y="232" class="text">Textual App / Widgets</text>
+  <text x="88" y="262" class="small">• ChatView 主对话流</text>
+  <text x="88" y="288" class="small">• SubAgentPanel 子智能体窗口</text>
+  <text x="88" y="314" class="small">• ActivityLog 工具/委派活动</text>
+  <text x="88" y="340" class="small">• InputBar 输入与快捷键</text>
+
+  <rect x="430" y="155" width="300" height="220" class="box"/>
+  <text x="458" y="196" class="layer">会话层 Session</text>
+  <text x="458" y="232" class="text">ChatSession</text>
+  <text x="458" y="262" class="small">• 保存/恢复历史</text>
+  <text x="458" y="288" class="small">• 持有 EventBus</text>
+  <text x="458" y="314" class="small">• 构建 orchestrator</text>
+  <text x="458" y="340" class="small">• 传入 workspace/deps</text>
+
+  <rect x="800" y="155" width="330" height="220" class="box"/>
+  <text x="828" y="196" class="layer">核心层 Core</text>
+  <text x="828" y="232" class="text">Agent Factory + Streaming Pump</text>
+  <text x="828" y="262" class="small">• AgentSpec / ToolRegistry</text>
+  <text x="828" y="288" class="small">• delegate_to_* 工具注入</text>
+  <text x="828" y="314" class="small">• pydantic-ai 事件转 UiEvent</text>
+  <text x="828" y="340" class="small">• token usage 聚合</text>
+
+  <rect x="1210" y="155" width="320" height="220" class="config"/>
+  <text x="1238" y="196" class="layer">配置与后端</text>
+  <text x="1238" y="232" class="text">Settings / MCP / Models</text>
+  <text x="1238" y="262" class="small">• AIDBG_* 环境变量</text>
+  <text x="1238" y="288" class="small">• OpenAI-compatible backend</text>
+  <text x="1238" y="314" class="small">• mcp_servers.json</text>
+  <text x="1238" y="340" class="small">• 每个 Agent 可独立 profile</text>
+
+  <path d="M360 265 C390 265 400 265 430 265" class="flow"/><path d="M730 265 C760 265 770 265 800 265" class="flow"/><path d="M1130 265 C1160 265 1175 265 1210 265" class="flow2"/>
+  <text x="372" y="248" class="label">提交 prompt</text><text x="742" y="248" class="label">run()</text><text x="1146" y="248" class="label">模型/MCP</text>
+
+  <rect x="60" y="450" width="1470" height="360" class="box"/>
+  <text x="88" y="493" class="layer">多智能体协作与证据分析流水线</text>
+
+  <rect x="105" y="540" width="230" height="165" class="agent"/><text x="130" y="580" class="layer">Orchestrator</text><text x="130" y="612" class="small">主控调度与综合结论</text><text x="130" y="640" class="small">工具：read_file</text><text x="130" y="668" class="small">按任务委派子智能体</text>
+  <rect x="405" y="515" width="230" height="115" class="agent"/><text x="430" y="555" class="layer">log-analyst</text><text x="430" y="585" class="small">解析证据包 / 定位日志坐标</text><text x="430" y="610" class="small">记录 finding</text>
+  <rect x="405" y="665" width="230" height="95" class="agent"/><text x="430" y="704" class="layer">case-rag</text><text x="430" y="734" class="small">案例库检索脚手架</text>
+  <rect x="705" y="515" width="230" height="115" class="agent"/><text x="730" y="555" class="layer">code-research</text><text x="730" y="585" class="small">源码研究 MCP 脚手架</text><text x="730" y="610" class="small">读取 findings board</text>
+  <rect x="705" y="665" width="230" height="95" class="agent"/><text x="730" y="704" class="layer">case-recorder</text><text x="730" y="734" class="small">故障案例沉淀脚手架</text>
+
+  <rect x="1010" y="515" width="215" height="245" class="tool"/><text x="1035" y="555" class="layer">Native Tools</text><text x="1035" y="590" class="small">• list_evidence</text><text x="1035" y="618" class="small">• targeted_view</text><text x="1035" y="646" class="small">• read_log</text><text x="1035" y="674" class="small">• describe_problem</text><text x="1035" y="702" class="small">• record/list_findings</text><text x="1035" y="730" class="small">• read_file / echo</text>
+  <rect x="1290" y="515" width="200" height="245" class="data"/><text x="1315" y="555" class="layer">领域数据</text><text x="1315" y="590" class="small">• CBBLOG* bundle</text><text x="1315" y="618" class="small">• uboot/panic/cbblog</text><text x="1315" y="646" class="small">• YAML target rules</text><text x="1315" y="674" class="small">• Problem Catalog</text><text x="1315" y="702" class="small">• Findings Board</text>
+
+  <path d="M335 590 C365 565 375 560 405 560" class="flow"/><path d="M335 625 C365 700 375 710 405 710" class="flow"/><path d="M635 572 C665 572 675 572 705 572" class="flow"/><path d="M635 712 C665 712 675 712 705 712" class="flow"/><path d="M935 620 C965 620 980 620 1010 620" class="flow2"/><path d="M1225 620 C1255 620 1265 620 1290 620" class="flow2"/>
+  <path d="M965 450 C965 420 965 400 965 375" class="flow"/><text x="985" y="425" class="label">UiEvent：流式 token / 工具 / 委派状态</text>
+
+  <rect x="62" y="836" width="1468" height="2" fill="#1e293b"/><text x="70" y="872" class="tiny">设计约束：只有 ui/ 依赖 Textual；core/session/config/logs 保持 UI 无关。子智能体与主控共用 streaming pump，委派输出自然回流到同一个 EventBus。</text>
+</svg>
